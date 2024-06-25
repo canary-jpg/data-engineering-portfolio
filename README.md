@@ -2,7 +2,7 @@
 Hey! My name is Hazel, and I'm excited to share my still developing data engineering portfolio. Within this repository, you'll find a growing catalog of projects completed in various data analytics/engineering courses or self-development exercises, each of which covers essential skills and techniques.
 
 # Projects
-## bike_rental_data_management ([writeup]([bike_rental_data_managment/writeup.md](https://github.com/canary-jpg/data-engineering-portfolio/blob/main/bike_rental_data_management/writeup.md)))
+## bike_rental_data_management ([writeup](https://github.com/canary-jpg/data-engineering-portfolio/blob/main/bike_rental_data_management/writeup.md)))
 A relational database with analytics-ready views connecting Citi Bike and weather datasets. This project involved:
 * inspecting and cleaning both datasets
 * developing a relational database structure
