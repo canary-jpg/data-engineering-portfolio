@@ -35,9 +35,9 @@ If you follow these instructions, the script will run on the initial dataset in 
 * cleanse_db.log: logs errors encountered during python script execution
 * cademycode_updated.db: output from cleanse_data.py that contains two tables
     * cademycode_aggreagted: a table containing the joined data from cleansed version of three cademycode.db tables
-    * missing_data: table containing incomplete data that could not imputed or assumed
+    * missing_data: a table containing incomplete data that could not imputed or assumed
 * cademycode.db: database containing data from three raw tables:
-    * cademycode_students: table containing student demographic and course information from cademycode
+    * cademycode_students: a table containing student demographic and course information from cademycode
     * cademycode_student_jobs: a lookup table containing student job industries
     * cademycode_courses: a lookup table containing career paths and number of hours it takes to complete each course
 * cademycode_updated.db: database used for testing the update process
