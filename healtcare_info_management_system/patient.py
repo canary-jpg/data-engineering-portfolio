@@ -32,14 +32,15 @@ def generate_patient_id(reg_date, reg_time):
 #function to calculate age using given date of birth
 def calculate_age(dob):
     today = date.today()
-    age = today.year - dob.year - ((dob.month, bod.year) > (today.month, today.day))
+    age = today.year - dob.year - ((dob.month, dob.day) > (today.month, today.day))
     return age 
 
 #function to show patient details given in a list
 def show_patient_details(list_of_patients):
     patient_titles = ["Patient ID", "Name", "Age", "Gender", "Date of birth (DD-MM-YYYY)", 
-    "Blood group", "Contact number", "SSN", "Weight (kg)", "Height (cm)", "Address",
-    "City", "State", "Zipcode", "Next of kin's name", "Next of kin's relation to patient",
+    "Blood group", "Contact number", "Alternate contact number" "Social Security Number", 
+    "Weight (lbs.)", "Height (ft.)", "Address", "City", "State", "Zip code",
+     "Next of kin's name", "Next of kin's relation to patient",
     "Next of kin's contact number", "Email", "Date of registration (DD-MM-YYYY)", 
     "Time of registration (hh:mm:ss)"]
     if len(list_of_patients) == 0:
@@ -62,13 +63,14 @@ class Patient:
         self.id = str()
         self.gender = str()
         self.age = int()
-        self.contact_number = str()
-        self.dob = str()
+        self.contact_number_1 = str()
+        self.contact_number_2 = str()
+        self.date_of_birth = str()
         self.blood_group = str()
         self.date_of_registration = str()
         self.time_of_registration = str()
         self.email = str()
-        self.ssn = str()
+        self.uid = str()
         self.height = int()
         self.weight = int()
         self.next_of_kin_name = str()
@@ -82,19 +84,21 @@ class Patient:
     def add_patient(self):
         st.write("Enter patient details: ")
         self.name = st.text_input("Full name")
-        self.gender = st.radio("Gender", ["Female", "Male", "Other"])
+        gender = st.radio("Gender", ["Female", "Male", "Other"])
         if gender == "Other":
             gender = st.text_input("Please mention")
         self.gender = gender
         dob = st.date_input("Date of birth (YYYY/MM/DD)")
         st.info("If the required date is not in the calendar, please type it into the box above.")
-        self.dob = dob.strftime("%d-%m-%Y")
+        self.date_of_birth = dob.strftime("%d-%m-%Y")
         self.age = calculate_age(dob)
         self.blood_group = st.text_input("Blood group")
-        self.contact_number = st.text_input("Contact number")
-        self.ssn = st.text_input("SSN")
-        self.weight = st.number_input("Weight in kg", value = 0, min_value = 0, max_value = 400)
-        self.height = st.number_input("Height in cm", value = 0, min_value = 0, max_value = 275)
+        self.contact_number_1 = st.text_input("Contact number")
+        contact_number_2 = st.text_input("Addition Contact number (optional)")
+        self.contact_number_2 = (lambda phone: None if phone == '' else phone)(contact_number_2)
+        self.uid = st.text_input("Social Security Number")
+        self.weight = st.number_input("Weight in lbs.", value = 0, min_value = 0, max_value = 400)
+        self.height = st.number_input("Height in ft.", value = 0, min_value = 0, max_value = 7)
         self.address = st.text_area("Address")
         self.city = st.text_input("City")
         self.state = st.text_input("State")
@@ -114,31 +118,38 @@ class Patient:
             with conn:
                 c.execute(
                     """
-                    INSERT INTO patient_record (
-                        id, name, age, gender, dob, blood_group,
-                        contact_number, ssn, weight, height, address,
-                        city, state, zip_code, next_of_kin_name,
-                        next_of_kin_relation_to_patient,
+                    INSERT INTO patient_record
+                    (
+                        id, name, age, gender, date_of_birth, blood_group,
+                        contact_number_1, contact_number_2, uid,
+                        weight, height, address,city, state, zip_code,
+                        next_of_kin_name, next_of_kin_relation_to_patient,
                         next_of_kin_contact_number, email,
                         date_of_registration, time_of_registration
                     )
                     VALUES (
                         :id, :name, :age, :gender, :dob, :blood_group,
-                        :contact_number, :ssn, :weight, :height, :address,
-                        :city, :state, :zip_code, :next_of_kin_name,
-                        :next_of_kin_relation_to_patient, :next_of_kin_contact_number,
-                        :email, :date_of_registration, :time_of_registration
+                        :phone_1, :phone_2, :uid, :weight, :height,
+                        :address, :city, :state, :zip_code,
+                        :kin_name, :kin_relation, :kin_phone, :email,
+                        :reg_date, :reg_time
                     );
                     """,
                     {
-                        "id": id, "name": name, "age": age, "gender": gender,
-                        "blood_group": blood_group, "contact_number": contact_number,
-                        "ssn": ssn, "weight": weight, "height": height, "address": address,
-                        "city": city, "state": state, "zip_code": zip_code, "next_of_kin_name": next_of_kin_name,
-                        "next_of_kin_relation_to_patient": next_of_kin_relation_to_patient,
-                        "next_of_kin_contact_number": next_of_kin_contact_number,
-                        "email": email, "date_of_registration": date_of_registration, 
-                        "time_of_registration": time_of_registration
+                        'id': self.id, 'name': self.name, 'age': self.age,
+                        'gender': self.gender, 'dob': self.date_of_birth,
+                        'blood_group': self.blood_group,
+                        'phone_1': self.contact_number_1,
+                        'phone_2': self.contact_number_2,
+                        'uid': self.uid, 'weight': self.weight,
+                        'height': self.height, 'address': self.address,
+                        'city': self.city, 'state': self.state,
+                        'zip_code': self.zip_code, 'kin_name': self.next_of_kin_name,
+                        'kin_relation': self.next_of_kin_relation_to_patient,
+                        'kin_phone': self.next_of_kin_contact_number,
+                        'email': self.email,
+                        'reg_date': self.date_of_registration,
+                        'reg_time': self.time_of_registration
                     }
                 )
             st.success("Patient details saved successfully.")
@@ -167,9 +178,11 @@ class Patient:
                 st.write("Here are the patient's current details: ")
                 show_patient_details(c.fetchall())
         st.write("Enter the patient's new details: ")
-        self.contact_number = st.text_input("Contact number")
-        self.weight = st.number_input("Weight in kg", value = 0, min_value = 0, max_value = 400)
-        self.height = st.number_input("Height in cm", value = 0, min_value = 0, max_value = 275)
+        self.contact_number_1 = st.text_input("Contact number")
+        contact_number_2 = st.text_input("Additional Contact Number (optional)")
+        self.contact_number_2 = (lambda phone: None if phone == '' else phone)(contact_number_2)
+        self.weight = st.number_input("Weight in lbs.", value = 0, min_value = 0, max_value = 400)
+        self.height = st.number_input("Height in ft.", value = 0, min_value = 0, max_value = 7)
         self.address = st.text_area("Address")
         self.city = st.text_input("City")
         self.state = st.text_input("State")
@@ -194,14 +207,14 @@ class Patient:
                     {"id": id}
                 )
                 
-                dob = [int(d) for d in c.fetchone()[0].split('-'[::-1])]
+                dob = [int(d) for d in c.fetchone()[0].split('-')[::-1]]
                 dob = date(dob[0], dob[1], dob[2])
                 self.age = calculate_age(dob)
         with conn:
             c.execute(
                 """ 
                 UPDATE patient_record
-                SET name = :name, age = :age, contact_number = :phone,
+                SET name = :name, age = :age, contact_number_1 = :phone_1, contact_number_2 = :phone_2,
                 weight = :weight, height = :height, address = :address,
                 city = :city, state = :state, zip_code = :zip_code,
                 next_of_kin_name = :kin_name, next_of_kin_relation_to_patient = :kin_relation,
@@ -212,7 +225,7 @@ class Patient:
                 """,
                 {
                     "id": id, "name": self.name, "age": self.age,
-                    "phone": self.contact_number, "weight": self.weight,
+                    "phone_1": self.contact_number_1, "phone_2": self.contact_number_2, "weight": self.weight,
                     "height": self.height, "address": self.address, "city": self.city,
                     "state": self.state, "zip_code": self.zip_code, 
                     "kin_name": self.next_of_kin_name, 
@@ -293,4 +306,4 @@ class Patient:
                 )
                 st.write("Here are the patient's details")
                 show_patient_details(c.fetchall())
-                conn.close()
+            conn.close()

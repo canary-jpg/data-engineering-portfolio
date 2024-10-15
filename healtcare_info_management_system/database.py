@@ -21,11 +21,11 @@ def initialize_db():
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL,
                 gender TEXT NOT NULL,
-                dob TEXT NOT NULL,
+                date_of_birth TEXT NOT NULL,
                 blood_group TEXT NOT NULL,
                 contact_number_1 TEXT NOT NULL,
                 contact_number_2 TEXT NOT NULL,
-                ssn TEXT NOT NULL UNIQUE,
+                uid TEXT NOT NULL UNIQUE,
                 weight INTEGER NOT NULL,
                 height INTEGER NOT NULL,
                 address TEXT NOT NULL,
@@ -44,13 +44,13 @@ def initialize_db():
     with conn:
         c.execute(
             """
-            CREATE TABLE IF NOT EXIST doctor_record (
+            CREATE TABLE IF NOT EXISTS doctor_record (
                 id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL,
                 gender TEXT NOT NULL,
                 dob TEXT NOT NULL,
-                blood_group TEXT NOT NULL
+                blood_group TEXT NOT NULL,
                 department_id INTEGER NOT NULL,
                 department_name TEXT NOT NULL,
                 contact_number TEXT NOT NULL,
@@ -64,15 +64,15 @@ def initialize_db():
                 state TEXT NOT NULL,
                 zipcode INTEGER NOT NULL,
                 FOREIGN KEY (department_id) REFERENCES department_record(id)
-                ON UPDATE CASCASE
+                ON UPDATE CASCADE
                 ON DELETE RESTRICT
             );
-"""
+                """
         )
     with conn:
         c.execute(
             """
-            CREATE TABLE IF NOT EXIST prescription_record(
+            CREATE TABLE IF NOT EXISTS prescription_record(
                 id TEXT PRIMARY KEY,
                 patient_id TEXT NOT NULL,
                 patient_name TEXT NOT NULL,
@@ -86,10 +86,10 @@ def initialize_db():
                 medicine_3_name TEXT,
                 medicine_3_dosage_desc TEXT,
                 FOREIGN KEY (patient_id) REFERENCES patient_record(id)
-                ON UPDATE CASCASE
+                ON UPDATE CASCADE
                 ON DELETE RESTRICT,
                 FOREIGN KEY (doctor_id) REFERENCES doctor_record(id)
-                ON UPDATE CASCASE
+                ON UPDATE CASCADE
                 ON DELETE RESTRICT
             ); 
 """
@@ -112,10 +112,10 @@ def initialize_db():
             comments TEXT,
             cost INTEGER NOT NULL,
             FOREIGN KEY (patient_id) REFERENCES patient_record(id)
-            ON UPDATE CASCASE
+            ON UPDATE CASCADE
             ON DELETE RESTRICT,
             FOREIGN KEY (doctor_id) REFERENCES doctor_record(id)
-            ON UPDATE CASCASE
+            ON UPDATE CASCADE
             ON DELETE RESTRICT
 
         );
