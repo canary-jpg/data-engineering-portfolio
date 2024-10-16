@@ -24,7 +24,7 @@ def initialize_db():
                 date_of_birth TEXT NOT NULL,
                 blood_group TEXT NOT NULL,
                 contact_number_1 TEXT NOT NULL,
-                contact_number_2 TEXT NOT NULL,
+                contact_number_2 TEXT,
                 uid TEXT NOT NULL UNIQUE,
                 weight INTEGER NOT NULL,
                 height INTEGER NOT NULL,
@@ -62,7 +62,7 @@ def initialize_db():
                 address TEXT NOT NULL,
                 city TEXT NOT NULL,
                 state TEXT NOT NULL,
-                zipcode INTEGER NOT NULL,
+                zip_code INTEGER NOT NULL,
                 FOREIGN KEY (department_id) REFERENCES department_record(id)
                 ON UPDATE CASCADE
                 ON DELETE RESTRICT
@@ -121,3 +121,9 @@ def initialize_db():
         );
 """
         )
+    conn.commit()
+    conn.close()
+
+
+if __name__ == '__main__':
+    initialize_db()
